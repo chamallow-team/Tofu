@@ -4,8 +4,30 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap     = { workspace = true, features = ["derive", "usage", "color", "error-context", "wrap_help", "suggestions"] }
-tokio    = { workspace = true, features = ["full"] }
-chrono   = { workspace = true}
+tokio      = { workspace = true, features = ["full"] }
+tokio-stream = "0.1.15"
+
+clap       = { workspace = true, features = ["derive", "usage", "color", "error-context", "wrap_help", "suggestions"] }
+chrono     = { workspace = true }
+serde      = { workspace = true }
+serde_json = { workspace = true }
+toml       = { workspace = true }
+
 tracing            = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["chrono", "time"] }
+
+mlua = { workspace = true, features = ["lua54", "serialize", "async", "vendored"] }
+
+twilight-model          = { workspace = true }
+twilight-http           = { workspace = true, features = ["default"] }
+twilight-standby        = { workspace = true }
+twilight-gateway        = { workspace = true, features = ["twilight-http"] }
+twilight-mention        = { workspace = true }
+twilight-util           = { workspace = true }
+twilight-gateway-queue  = { workspace = true, features = ["twilight-http"] }
+twilight-cache-inmemory = { workspace = true, features = ["permission-calculator"] }
+
+color-eyre = { version = "0.6.3", features = ["color-spantrace", "tracing-error", "capture-spantrace"] }
+
+anyhow    = { workspace = true }
+thiserror = { workspace = true }

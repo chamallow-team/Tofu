@@ -1,0 +1,4 @@
+intents = 37379
+
+[cache]
+message_cache_size = 200
