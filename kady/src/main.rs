@@ -2,6 +2,7 @@ use std::path::PathBuf;
 use clap::Parser;
 use std::io;
 use tracing::{error, info};
+use tracing_subscriber::fmt::time::ChronoLocal;
 
 #[derive(Parser)]
 pub struct App {
@@ -9,6 +10,7 @@ pub struct App {
     pub assets: PathBuf
 }
 
+/// This function will check if the arguments passed to the program are valid
 fn check_app_args(app: &App) -> io::Result<()> {
     if !app.assets.exists() || !std::fs::metadata(&app.assets)?.is_dir() {
         error!(target: "AssetsPreCheck", "The given assets folder path is invalid");
@@ -34,14 +36,14 @@ fn check_app_args(app: &App) -> io::Result<()> {
         "Config located at {}",
         config_path.canonicalize()
             .map(|p| p.to_string_lossy().to_string())
-            .unwrap_or(String::new())
+            .unwrap_or_default()
     );
     info!(
         target: "App",
         "Token  located at {}",
         token_path.canonicalize()
             .map(|p| p.to_string_lossy().to_string())
-            .unwrap_or(String::new())
+            .unwrap_or_default()
     );
 
     Ok(())
@@ -52,6 +54,7 @@ async fn main() {
     // init tracing_subscriber
     tracing_subscriber::fmt()
         .with_writer(io::stderr)
+        .with_timer(ChronoLocal::default())
         .init();
 
     let app = App::parse();
