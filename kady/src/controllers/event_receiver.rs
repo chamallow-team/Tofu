@@ -1,6 +1,5 @@
-use crate::ensure_user_db_presence;
 use tracing::{error, warn};
-use twilight_model::application::interaction::{Interaction, InteractionData, InteractionType};
+use twilight_model::application::interaction::{InteractionData, InteractionType};
 use twilight_model::application::interaction::application_command::CommandData;
 use twilight_model::channel::message::{Component, MessageFlags};
 use twilight_model::channel::message::component::{ActionRow, Button, ButtonStyle};
@@ -8,9 +7,9 @@ use twilight_model::gateway::event::Event;
 use twilight_model::gateway::payload::incoming::InteractionCreate;
 use twilight_model::http::interaction::{InteractionResponse, InteractionResponseType};
 use twilight_model::id::Id;
-use twilight_model::id::marker::{ApplicationMarker, UserMarker};
+use twilight_model::id::marker::UserMarker;
 use twilight_util::builder::InteractionResponseDataBuilder;
-use crate::{Context};
+use crate::{Context, ensure_user_db_presence as ensure_user};
 
 pub(crate) async fn handle_event(ctx: &Context, event: &Event) -> anyhow::Result<()> {
     match event {
@@ -49,7 +48,7 @@ async fn command_received(ctx: &Context, interaction: &InteractionCreate, comman
     dbg!(&command_data.name);
 
     {
-        let r = ensure_user_db_presence!(*ctx.database, &user_id);
+        let _ = ensure_user!(*ctx.database, &user_id);
     }
 
     // Check the user accepted the TOS
