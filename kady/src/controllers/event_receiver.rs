@@ -1,9 +1,14 @@
+use crate::ensure_user_db_presence;
+use tracing::{error, warn};
 use twilight_model::application::interaction::{Interaction, InteractionData, InteractionType};
 use twilight_model::application::interaction::application_command::CommandData;
-use twilight_model::channel::message::MessageFlags;
+use twilight_model::channel::message::{Component, MessageFlags};
+use twilight_model::channel::message::component::{ActionRow, Button, ButtonStyle};
 use twilight_model::gateway::event::Event;
 use twilight_model::gateway::payload::incoming::InteractionCreate;
-use twilight_model::http::interaction::{InteractionResponse, InteractionResponseData, InteractionResponseType};
+use twilight_model::http::interaction::{InteractionResponse, InteractionResponseType};
+use twilight_model::id::Id;
+use twilight_model::id::marker::{ApplicationMarker, UserMarker};
 use twilight_util::builder::InteractionResponseDataBuilder;
 use crate::{Context};
 
@@ -36,10 +41,52 @@ pub(crate) async fn handle_event(ctx: &Context, event: &Event) -> anyhow::Result
 }
 
 async fn command_received(ctx: &Context, interaction: &InteractionCreate, command_data: &CommandData) -> anyhow::Result<()> {
+    if interaction.author_id().is_none() {
+        warn!(target: "CommandReceiver", "Command {} received with no user", command_data.name);
+        return Ok(());
+    }
+    let user_id = interaction.author_id().unwrap();
     dbg!(&command_data.name);
 
+    {
+        let r = ensure_user_db_presence!(*ctx.database, &user_id);
+    }
+
     // Check the user accepted the TOS
-    if !verify_user_tos_acceptance(ctx, interaction).await { return Ok(()); }
+    if !verify_user_tos_acceptance(ctx, &user_id).await {
+        let interface = ctx.client.interaction(ctx.application_id);
+        let data = InteractionResponseDataBuilder::new()
+            .content("You didn't accepted the TOS. See [url]")
+            .components([
+                Component::ActionRow(
+                    ActionRow {
+                        components: vec![
+                            Component::Button(Button {
+                                custom_id: Some("NATIVE_ACCEPT_TOS".to_string()),
+                                disabled: false,
+                                emoji: None,
+                                label: Some("Accept".to_string()),
+                                style: ButtonStyle::Primary,
+                                url: None
+                            })
+                        ]
+                    }
+                )
+            ])
+            .build();
+
+
+        interface.create_response(
+            interaction.id,
+            &interaction.token,
+            &InteractionResponse {
+                kind: InteractionResponseType::ChannelMessageWithSource,
+                data: Some(data),
+            },
+        ).await?;
+
+        return Ok(());
+    }
 
     let interface = ctx.client.interaction(ctx.application_id);
 
@@ -64,10 +111,31 @@ async fn command_received(ctx: &Context, interaction: &InteractionCreate, comman
     Ok(())
 }
 
+/// Call the 'ENSURE_USER' procedure in the database
+///
+/// This macro should be expected to be called in an asynchronous context.
+/// The return value is
+#[macro_export]
+macro_rules! ensure_user_db_presence {
+    ($db:expr, $user_id:expr) => {
+        sqlx::query!("CALL ensure_user(?);", $user_id.to_string())
+            .execute(&$db)
+            .await
+    };
+}
+
 /// Verify if the user has accepted the TOS
 ///
 /// If not, it'll send a message and return false
-async fn verify_user_tos_acceptance(ctx: &Context, interaction: &Interaction) -> bool {
-    // TODO call database
-    true
+async fn verify_user_tos_acceptance(ctx: &Context, user_id: &Id<UserMarker>) -> bool {
+    let query = sqlx::query!("SELECT accepted_tos FROM users WHERE id=?;", user_id.to_string())
+        .fetch_one(ctx.database.as_ref())
+        .await;
+
+    if let Err(e) = query {
+        error!(target: "CommandReceiver", "Failed to fetch user from database: {}", e);
+        return false;
+    }
+
+    query.unwrap().accepted_tos == 1
 }
