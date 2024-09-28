@@ -1,0 +1,32 @@
+version = "0.0.1"
+# Can be:
+# - `native/kady-team`
+# - `discord/@id`
+# - `mail/mail@mail`
+# - Simply a name
+author  = ["native/kady-team"]
+# Can be either
+# - `app`: The plugin contains interactions or events
+# - `lib`: The plugin can be used by others plugins, it's a library
+# Note, for an app, all scripts are local and cannot be share to other plugins
+# This specification doesn't apply to libs :)
+type = "app"
+# The dev can add a list of tags
+# The tags are pre-defined in the API, so there is no need to add another translation system
+tags = ["moderation", "ai"]
+
+# Contains the name, description and the localizations associated
+[name]
+default = "Automod"
+description = "The auto-moderator plugin"
+
+[name.localizations]
+fr = { name = "Auto-Modération", description = "Le plugin de modération natif" }
+
+[scripts]
+# Will ignore; based on the schema used by .gitignore (prefer to use a .ignore file?)
+ignored = ["utils/**/*"]
+
+[dependencies]
+kady-native = "latest"
+jsp = "0.0.1"

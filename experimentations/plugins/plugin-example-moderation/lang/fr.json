@@ -1,0 +1,6 @@
+{
+    "ban": {
+        "cannot_ban": "❌ Impossible de bannir l'utilisateur {user}",
+        "success": "✅ L'utilisateur {user} a été banni(e) avec succès"
+    }
+}
