@@ -1,26 +1,25 @@
 mod config;
-mod errors;
 mod controllers;
+mod errors;
 mod plugins;
 
-use std::path::{Path, PathBuf};
 use clap::Parser;
-use std::{env, io};
+use database::Database;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::Duration;
+use std::{env, io};
 use tokio::sync::RwLock;
 use tokio::task::JoinSet;
 use tokio::time;
 use tracing::{error, info};
 use tracing_subscriber::fmt::time::ChronoLocal;
 use twilight_cache_inmemory::{InMemoryCache, InMemoryCacheBuilder, ResourceType};
-use twilight_gateway::{ConfigBuilder as GatewayConfigBuilder};
+use twilight_gateway::ConfigBuilder as GatewayConfigBuilder;
 use twilight_http::Client;
 use twilight_model::channel::message::{AllowedMentions, MentionType};
-use twilight_model::id::Id;
 use twilight_model::id::marker::ApplicationMarker;
-use crate::controllers::database;
-use crate::controllers::database::Database;
+use twilight_model::id::Id;
 
 #[derive(Parser, Clone, Debug)]
 pub struct App {
@@ -46,7 +45,6 @@ fn check_app_args(app: &App) -> io::Result<()> {
         error!(target: "AssetsPreCheck", "Cannot find the required `token` file in the 'assets' folder");
         std::process::exit(1);
     }
-
 
     info!(
         target: "App",
@@ -98,13 +96,10 @@ async fn init_bot(assets_path: &Path) {
     let token = env::var("TOKEN").expect("Cannot acquire the 'TOKEN' env");
     let database_url = env::var("DATABASE_URL").expect("Cannot acquire the 'DATABASE_URL' env");
 
-    let database = match database::Database::connect(&database_url).await {
-        Ok(pool) => Arc::new(pool),
-        Err(e) => {
-            error!(target: "Database", "Error connecting to database: {e}");
-            std::process::exit(1);
-        }
-    };
+    let database = database::init_database(&database_url).await;
+    if database::run_migrations(&database).await.is_err() {
+        std::process::exit(1);
+    }
 
     let config = match config::get_config(assets_path) {
         Ok(cnf) => cnf,
@@ -119,7 +114,7 @@ async fn init_bot(assets_path: &Path) {
         InMemoryCacheBuilder::new()
             .message_cache_size(config.cache.message_cache_size)
             .resource_types(ResourceType::all())
-            .build()
+            .build(),
     ));
 
     let client = Arc::new(
@@ -132,7 +127,7 @@ async fn init_bot(assets_path: &Path) {
                 roles: vec![],
                 users: vec![],
             })
-            .build()
+            .build(),
     );
 
     // Create the shards
@@ -142,11 +137,19 @@ async fn init_bot(assets_path: &Path) {
         gateway_config,
         // If we need to change config for each shard
         |_, builder: GatewayConfigBuilder| builder.build(),
-    ).await;
+    )
+    .await;
 
     let application_id = {
-        let response = client.current_user_application().await.expect("Couldn't get the current application");
-        response.model().await.expect("Cannot acquire the Application Model").id
+        let response = client
+            .current_user_application()
+            .await
+            .expect("Couldn't get the current application");
+        response
+            .model()
+            .await
+            .expect("Cannot acquire the Application Model")
+            .id
     };
 
     if let Err(e) = shards {
@@ -158,8 +161,16 @@ async fn init_bot(assets_path: &Path) {
     // Create the set of shards
     // Each shard will have his dedicated task
     let mut set = JoinSet::new();
+    let database = Arc::new(database);
+
     for mut shard in shards {
-        let ctx_s = Context { client: client.clone(), cache: cache.clone(), database: database.clone(), application_id };
+        let ctx_s = Context {
+            client: client.clone(),
+            cache: cache.clone(),
+            database: database.clone(),
+            application_id,
+        };
+
         set.spawn(async move {
             loop {
                 // acquire the event and manage any error received
@@ -167,7 +178,9 @@ async fn init_bot(assets_path: &Path) {
                     Ok(event) => event,
                     Err(source) => {
                         error!(?source, "error receiving event");
-                        if source.is_fatal() { break; }
+                        if source.is_fatal() {
+                            break;
+                        }
 
                         continue;
                     }
