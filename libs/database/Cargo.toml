@@ -1,0 +1,8 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sqlx = { workspace = true, features = ["chrono", "sqlx-macros", "sqlx-mysql", "mysql", "sqlite", "sqlx-sqlite", "runtime-tokio", "migrate"] }
+tracing = { workspace = true }
