@@ -1,8 +1,18 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     purge: ['./index.html', './public/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                'dark': '#0e0e11',
+                'cream': '#e2c2b2',
+            },
+            fontFamily: {
+                sans: ['Poppins', ...defaultTheme.fontFamily.sans]
+            }
+        },
     },
     plugins: [],
 }
