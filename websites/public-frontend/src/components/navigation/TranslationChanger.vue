@@ -16,7 +16,7 @@
 			</g>
 		</svg>
 		<div v-if="showPopup"
-				 class="absolute border border-grayish rounded flex flex-row -translate-x-2/3 mt-3">
+				 class="absolute z-20 bg-dark border border-grayish rounded flex flex-row -translate-x-2/3 mt-3">
 			<p v-for="l in SUPPORTED_LOCALES" :key="l"
 				 @click="changeLocale(l)"
 				 class="uppercase py-3 px-4 rounded cursor-pointer"
