@@ -1,17 +1,12 @@
 <template>
-	<div class="home">
-		<img alt="Vue logo" src="logo.jpg">
-		<HelloWorld msg="Welcome to Your Vue.js App"/>
+	<div>
+		<!--		<img alt="Vue logo" src="logo.jpg">-->
+		<p>{{ t('home') }}</p>
 	</div>
 </template>
 
-<script>
-import HelloWorld from '@/components/HelloWorld.vue'
+<script setup>
+import {useI18n} from "vue-i18n";
 
-export default {
-	name: 'HomeView',
-	components: {
-		HelloWorld
-	}
-}
+const {t} = useI18n()
 </script>
