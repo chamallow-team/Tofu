@@ -1,8 +1,15 @@
 {
   "nav": {
     "blog": "Blog",
-    "team": "Equipe",
     "help": "Aide",
+    "team": "Equipe",
     "tos": "TOS"
+  },
+  "home": {
+    "main_description": "La nouvelle génération de bots, comme vous n'en avez jamais vu.",
+    "add_kady": "Ajouter Kady à votre serveur"
+  },
+  "blog": {
+    "by": "Par {name}"
   }
 }

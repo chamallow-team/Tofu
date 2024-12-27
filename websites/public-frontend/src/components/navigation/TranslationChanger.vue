@@ -34,7 +34,7 @@ import i18nActions from '@/translation'
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 
-const showPopup = ref(true);
+const showPopup = ref(false);
 const router = useRouter();
 
 const {locale} = useI18n()

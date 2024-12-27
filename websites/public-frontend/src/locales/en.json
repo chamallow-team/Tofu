@@ -1,8 +1,15 @@
 {
   "nav": {
     "blog": "Blog",
-    "team": "Team",
     "help": "Help",
+    "team": "Team",
     "tos": "TOS"
+  },
+  "home": {
+    "main_description": "The next generation of bots, unlike anything you've seen.",
+    "add_kady": "Add Kady to your server"
+  },
+  "blog": {
+    "by": "By {name}"
   }
 }

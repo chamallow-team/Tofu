@@ -1,5 +1,6 @@
 <template>
-	<nav class="flex flex-row justify-end items-center py-8 px-10 gap-16">
+	<nav class="flex flex-row justify-end items-center py-8 px-10 gap-16 absolute top-0 left-0 w-screen"
+			 style="z-index: 9999">
 		<!-- Nav -->
 		<div class="flex flex-row justify-between gap-10">
 			<router-link :to="{name: 'blog_home'}" class="hover:underline">{{ t('nav.blog') }}</router-link>

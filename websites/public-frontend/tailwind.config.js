@@ -8,7 +8,8 @@ module.exports = {
             colors: {
                 'dark': '#0e0e11',
                 'cream': '#e2c2b2',
-                'grayish': '#353641'
+                'grayish': '#353641',
+                'discord': '#5865f2'
             },
             fontFamily: {
                 sans: ['Poppins', ...defaultTheme.fontFamily.sans]
