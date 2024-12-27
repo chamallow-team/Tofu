@@ -1,0 +1,1 @@
+export const INVITE_LINK = "https://discord.com/oauth2/authorize?client_id=1119360339801288714&permissions=277025769536&scope=applications.commands%20bot";
