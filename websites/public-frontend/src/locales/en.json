@@ -3,11 +3,16 @@
     "blog": "Blog",
     "help": "Help",
     "team": "Team",
+    "features": "Features",
     "tos": "TOS"
   },
   "home": {
     "main_description": "The next generation of bots, unlike anything you've seen.",
-    "add_kady": "Add Kady to your server"
+    "add_kady": "Add Kady to your server",
+    "reviews": {
+      "t1": "Kady, it's all of this...",
+      "t2": "...and everyone loves it"
+    }
   },
   "blog": {
     "by": "By {name}"

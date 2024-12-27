@@ -3,11 +3,16 @@
     "blog": "Blog",
     "help": "Aide",
     "team": "Equipe",
+    "features": "Fonctionnalités",
     "tos": "TOS"
   },
   "home": {
     "main_description": "La nouvelle génération de bots, comme vous n'en avez jamais vu.",
-    "add_kady": "Ajouter Kady à votre serveur"
+    "add_kady": "Ajouter Kady à votre serveur",
+    "reviews": {
+      "t1": "Kady, c'est tout cela...",
+      "t2": "...et tout le monde l'adore"
+    }
   },
   "blog": {
     "by": "Par {name}"

@@ -11,6 +11,7 @@
 			<div class="flex items-center justify-between gap-16">
 				<div class="flex flex-row justify-between gap-10">
 					<router-link :to="{name: 'blog_home'}" class="hover:underline">{{ t('nav.blog') }}</router-link>
+					<router-link :to="{name: 'features'}" class="hover:underline">{{ t('nav.features') }}</router-link>
 					<router-link :to="{name: 'team_page'}" class="hover:underline">{{ t('nav.team') }}</router-link>
 					<router-link :to="{name: 'support'}" class="hover:underline">{{ t('nav.help') }}</router-link>
 					<router-link :to="{name: 'tos'}" class="hover:underline">{{ t('nav.tos') }}</router-link>
@@ -69,10 +70,13 @@
 			</svg>
 
 			<div v-if="showNavigation"
-					 class="absolute left-1/2 -translate-x-1/2 translate-y-28 bg-dark p-6 border border-grayish rounded">
-				<div class="flex flex-row justify-between gap-10 text-xl mb-10">
+					 class="absolute left-1/2 -translate-x-1/2 translate-y-60 w-5/6 bg-dark p-6 border border-grayish rounded">
+				<div class="flex flex-col text-center justify-between gap-10 text-xl mb-10">
 					<router-link :to="{name: 'blog_home'}" class="hover:underline" @click="showNavigation = false">
 						{{ t('nav.blog') }}
+					</router-link>
+					<router-link :to="{name: 'features'}" class="hover:underline" @click="showNavigation = false">
+						{{ t('nav.features') }}
 					</router-link>
 					<router-link :to="{name: 'team_page'}" class="hover:underline" @click="showNavigation = false">
 						{{ t('nav.team') }}
@@ -87,7 +91,7 @@
 					</router-link>
 				</div>
 				<!-- Contact -->
-				<div class="flex flex-row justify-start gap-5 items-center">
+				<div class="flex flex-row justify-around gap-5 items-center">
 					<!-- Discord -->
 					<a target="_blank" href="https://discord.gg/tncuQH86EM">
 						<svg class="scale-125" width="32" height="32" xmlns="http://www.w3.org/2000/svg" fill="none">

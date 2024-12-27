@@ -35,6 +35,10 @@ const routes = [
             {
                 path: "terms",
                 name: "tos"
+            },
+            {
+                path: "features",
+                name: "features"
             }
         ]
     }
