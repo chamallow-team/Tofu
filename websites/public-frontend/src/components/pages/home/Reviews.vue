@@ -33,7 +33,6 @@
 			</div>
 		</div>
 
-		<p class="mt-96">A</p>
 	</div>
 </template>
 

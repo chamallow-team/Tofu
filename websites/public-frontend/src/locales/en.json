@@ -12,7 +12,9 @@
     "reviews": {
       "t1": "Kady, it's all of this...",
       "t2": "...and everyone loves it"
-    }
+    },
+    "no_regret": "You'll not regret it",
+    "start": "Start your journey now"
   },
   "blog": {
     "by": "By {name}"

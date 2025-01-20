@@ -12,7 +12,9 @@
     "reviews": {
       "t1": "Kady, c'est tout cela...",
       "t2": "...et tout le monde l'adore"
-    }
+    },
+    "no_regret": "Vous ne le regretterez pas",
+    "start": "Commencez votre voyage maintenant"
   },
   "blog": {
     "by": "Par {name}"
